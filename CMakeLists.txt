@@ -10,5 +10,5 @@ set (HEADERS
 
 include_directories("include")
 
-add_library ( visualizer_camera_plain SHARED ${SOURCES} ${HEADERS})
-target_link_libraries(visualizer_camera_plain PRIVATE lms)
+add_library ( camera_renderer SHARED ${SOURCES} ${HEADERS})
+target_link_libraries(camera_renderer PRIVATE lms)
