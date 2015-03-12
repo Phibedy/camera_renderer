@@ -2,8 +2,8 @@
 #define VISUALIZER_CAMERA_PLAIN_VISUALIZER_H
 
 #include <ogre/visualmanager.h>
-#include <core/datamanager.h>
-#include <core/module.h>
+#include <lms/datamanager.h>
+#include <lms/module.h>
 #include <ogre/window.h>
 //#include <data/image_data.h>
 //#include <data/image_info.h>
