@@ -20,7 +20,7 @@ public:
 	bool cycle();
 
 protected: 
-    visual::window *window;
+    visual::Window *window;
     float plane_size;
     int texture_size;
 
@@ -34,7 +34,6 @@ protected:
     Ogre::SceneNode *rootNode;
     Ogre::BillboardSet *billboards;
 private:
-    bool debug_enabled;
     bool firstrun; 
     
     void setupEnvironment(int width, int height);

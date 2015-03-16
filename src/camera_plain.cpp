@@ -17,20 +17,13 @@
 using namespace Ogre;
 
 bool Camera_plain::initialize(){
+    logger.debug("init") <<"init camera_plain";
 
-    printf("Init: camera_plain\n");
     firstrun = true;
-    debug_enabled = true;
-//    handleImage = datamanager()->acquire_channel<unsigned char*>("IMAGE_RAW", Access::READ);
-
-    window = VisualManager::getInstance()->getWindow("Image");
-
+    window = VisualManager::getInstance()->getWindow(this,"Image");
     imageGroundMaterial = Ogre::MaterialManager::getSingleton().create("CameraImageGroundMaterial",
                           Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
-    window->addKeyFunction(OIS::KC_P, [this]() {
-        debug_enabled = !debug_enabled;
-    });
 
     window->getCamera()->setProjectionType(Ogre::ProjectionType::PT_ORTHOGRAPHIC);
     window->getCamera()->setPosition(Ogre::Vector3(0,0,-1));
@@ -42,13 +35,11 @@ bool Camera_plain::initialize(){
     return true;
 }
 
-bool Camera_plain::deinitialize()
-{
-    printf("Deinit: camera_plain");
-
+bool Camera_plain::deinitialize(){
+    logger.error("Deinit:")<< "Not implemented yet";
     //TODO
 
-    return true;
+    return false;
 }
 
 bool Camera_plain::cycle (){
@@ -96,8 +87,9 @@ void Camera_plain::setupEnvironment( int w, int h ){
 
 }
 
-void Camera_plain::drawImage(){
-    /*
+//http://www.ogre3d.org/forums/viewtopic.php?f=5&t=55824
+void Camera_plain::drawImage()
+{
     unsigned char *image = *handleImage->get();
     unsigned char *debug = handleDebug->get();
     Data::ImageInfo *imageInfo = handleImageInfo->get();
@@ -112,55 +104,7 @@ void Camera_plain::drawImage(){
         for (unsigned int j = 0; j < imageInfo->width; ++j) {
             unsigned char r, g, b;
             r = g = b = image[i * imageInfo->width + j];
-            unsigned char dbg_color = debug[i * imageInfo->width + j];
-            if (debug_enabled && dbg_color != 0) {
-                switch (dbg_color) {
-                case 0:
-                    break;
-                case 1:
-                    r = 0;
-                    g = 0;
-                    b = 255;
-                    break;
-                case 2:
-                    r = 255;
-                    g = 0;
-                    b = 0;
-                    break;
-                case 3:
-                    r = 0;
-                    g = 255;
-                    b = 0;
-                    break;
-                case 4:
-                    r = 255;
-                    g = 255;
-                    b = 0;
-                    break;
-                case 5:
-                    r = 255;
-                    g = 0;
-                    b = 255;
-                    break;
-                case 6:
-                    r = 0;
-                    g = 0;
-                    b = 0;
-                    break;
-                case 10:
-                    r = 255.*0.3;
-                    g = 255.*0.3;
-                    b = 255;
-                    break;
-                default:
-                    printf("Unrecognized image debug color! Code:%i \n",dbg_color);
-                    r = 100;
-                    g = 255;
-                    b = 100;
-                    printf("x:%i y:%i \n",j,i);
-                    break;
-                }
-            }
+            //WHY????
             if (i == 0 || j == 0 || i == imageInfo->height - 1 || j == imageInfo->width - 1) {
                 *pDest++ = 0; // B
                 *pDest++ = 0; // G
@@ -177,5 +121,4 @@ void Camera_plain::drawImage(){
     }
 
     pixelBuffer->unlock();
-    */
 }
