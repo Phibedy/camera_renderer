@@ -1,5 +1,5 @@
 #include <camera_plain.h>
-
+#include <lms/imaging/converter.h>
 #include <ogre/visualmanager.h>
 #include <OGRE/OgreLogManager.h>
 #include <OGRE/OgreViewport.h>
@@ -13,11 +13,15 @@
 #include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreTechnique.h>
 #include <OGRE/OgreTextureManager.h>
+#include <OGRE/OgreHardwarePixelBuffer.h>
 
 using namespace Ogre;
 
 bool Camera_plain::initialize(){
     logger.debug("init") <<"init camera_plain";
+
+    //get camera
+    image = datamanager()->readChannel<lms::imaging::Image>(this,"CAMERA_IMAGE");
 
     firstrun = true;
     window = VisualManager::getInstance()->getWindow(this,"Image");
@@ -38,16 +42,14 @@ bool Camera_plain::initialize(){
 bool Camera_plain::deinitialize(){
     logger.error("Deinit:")<< "Not implemented yet";
     //TODO
-
     return false;
 }
 
 bool Camera_plain::cycle (){
 
-    //Data::ImageInfo *info = handleImageInfo->get();
-
     if (firstrun) {
         firstrun = false;
+        //TODO
     //    setupEnvironment(info->width, info->height);
           setupEnvironment(320, 240);
     }
@@ -88,11 +90,19 @@ void Camera_plain::setupEnvironment( int w, int h ){
 }
 
 //http://www.ogre3d.org/forums/viewtopic.php?f=5&t=55824
-void Camera_plain::drawImage()
-{
-    unsigned char *image = *handleImage->get();
-    unsigned char *debug = handleDebug->get();
-    Data::ImageInfo *imageInfo = handleImageInfo->get();
+void Camera_plain::drawImage(){
+
+    HardwarePixelBufferSharedPtr pixelBuffer = imageTexture->getBuffer();
+    // Lock the pixel buffer and get a pixel box
+    pixelBuffer->lock(HardwareBuffer::HBL_NORMAL); // for best performance use HBL_DISCARD!
+    const PixelBox& pixelBox = pixelBuffer->getCurrentLock();
+    logger.debug("draw image") << pixelBox.getRowSkip() << " " <<Ogre::PixelUtil::getNumElemBytes(pixelBox.format);
+    uint8* pDest = static_cast<uint8*>(pixelBox.data);
+    //TODO set image
+    lms::imaging::convertRaw(image->format(),image->data(),image->size(),lms::imaging::Format::BGRA, pDest);
+    pixelBuffer->unlock();
+
+    /*
     HardwarePixelBufferSharedPtr pixelBuffer = imageTexture->getBuffer();
 
     // Lock the pixel buffer and get a pixel box
@@ -100,12 +110,12 @@ void Camera_plain::drawImage()
     const PixelBox& pixelBox = pixelBuffer->getCurrentLock();
 
     uint8* pDest = static_cast<uint8*>(pixelBox.data);
-    for (unsigned int i = 0; i < imageInfo->height; ++i) {
-        for (unsigned int j = 0; j < imageInfo->width; ++j) {
+    for (unsigned int i = 0; i < 240; ++i) {
+        for (unsigned int j = 0; j < 320; ++j) {
             unsigned char r, g, b;
-            r = g = b = image[i * imageInfo->width + j];
+            r = g = b = 100;
             //WHY????
-            if (i == 0 || j == 0 || i == imageInfo->height - 1 || j == imageInfo->width - 1) {
+            if (i == 0 || j == 0 || i == 240 - 1 || j == 320 - 1) {
                 *pDest++ = 0; // B
                 *pDest++ = 0; // G
                 *pDest++ = 255; // R
@@ -119,6 +129,7 @@ void Camera_plain::drawImage()
             pDest += pixelBox.getRowSkip() * Ogre::PixelUtil::getNumElemBytes(pixelBox.format);
         }
     }
-
     pixelBuffer->unlock();
+    */
+
 }

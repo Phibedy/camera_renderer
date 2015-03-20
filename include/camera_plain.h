@@ -5,8 +5,7 @@
 #include <lms/datamanager.h>
 #include <lms/module.h>
 #include <ogre/window.h>
-//#include <data/image_data.h>
-//#include <data/image_info.h>
+#include <lms/imaging/image.h>
 
 #include <OGRE/OgreBillboardSet.h>
 #include <OGRE/OgreMaterial.h>
@@ -23,10 +22,10 @@ protected:
     visual::Window *window;
     float plane_size;
     int texture_size;
-
-//    Handle<unsigned char*> *handleImage;
-//    Handle<unsigned char> *handleDebug;
-//    Handle<Data::ImageInfo> *handleImageInfo;
+    /**
+     * @brief image the image to draw
+     */
+    const lms::imaging::Image* image;
 
     Ogre::MaterialPtr imageGroundMaterial;
     Ogre::TexturePtr imageTexture;
