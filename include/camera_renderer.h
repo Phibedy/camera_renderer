@@ -10,6 +10,7 @@
 #include <OGRE/OgreBillboardSet.h>
 #include <OGRE/OgreMaterial.h>
 #include <OGRE/OgreTexture.h>
+#include <OGRE/OgreRectangle2D.h>
 
 class Camera_plain : public lms::Module {
 public:
@@ -28,12 +29,19 @@ protected:
     const lms::imaging::Image* image;
 
     Ogre::MaterialPtr imageGroundMaterial;
+    /**
+     * @brief imageTexture texture that will be drawn on the billboard
+     */
     Ogre::TexturePtr imageTexture;
     
     Ogre::SceneNode *rootNode;
-    Ogre::BillboardSet *billboards;
+    /**
+     * @brief rect image will be drawn inside the rect
+     */
+    Ogre::Rectangle2D* rect;
 private:
-    bool firstrun; 
+    int lastWidth;
+    int lastHeight;
     
     void setupEnvironment(int width, int height);
     void drawImage();
