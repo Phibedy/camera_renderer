@@ -7,6 +7,9 @@ Simple test-module that uses:
  * orgre_window_handler
 
 
+###Dependencies:
+ * [Imaging](https://github.com/syxolk/imaging)
+ 
 ###TODO
  * get it working
  * link pages
