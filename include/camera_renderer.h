@@ -1,5 +1,5 @@
-#ifndef VISUALIZER_CAMERA_PLAIN_VISUALIZER_H
-#define VISUALIZER_CAMERA_PLAIN_VISUALIZER_H
+#ifndef CAMERA_RENDERER_H
+#define CAMERA_RENDERER_H
 
 #include <ogre/visualmanager.h>
 #include <lms/datamanager.h>
@@ -42,9 +42,15 @@ protected:
 private:
     int lastWidth;
     int lastHeight;
-    
+
+    /**
+     * name that written before the modulename to get the material
+     *
+     */
+    static std::string groundMatName;
+
     void setupEnvironment(int width, int height);
     void drawImage();
 };
 
-#endif
+#endif /* CAMERA_RENDERER_H */

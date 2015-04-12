@@ -1,4 +1,4 @@
-#include <camera_plain.h>
+#include <camera_renderer.h>
 
 extern "C" {
 void* getInstance () {

@@ -1,4 +1,4 @@
-#include <camera_plain.h>
+#include <camera_renderer.h>
 #include <lms/imaging/converter.h>
 #include <ogre/visualmanager.h>
 #include <OGRE/OgreLogManager.h>
@@ -15,24 +15,34 @@
 #include <OGRE/OgreTextureManager.h>
 #include <OGRE/OgreHardwarePixelBuffer.h>
 #include <OGRE/OgreRectangle2D.h>
+
+//test
+#include <lms/imaging/image_factory.h>
+//TODO remove that
 using namespace Ogre;
 
+std::string Camera_plain::groundMatName = "CameraImageGroundMaterial";
+
 bool Camera_plain::initialize(){
-    logger.debug("init") <<"init camera_plain";
+    logger.debug("init") <<"init";
     //set values
     lastWidth = 0;
     lastHeight = 0;
 
     //get the image
-    image = datamanager()->readChannel<lms::imaging::Image>(this,"CAMERA_IMAGE");
+    image = datamanager()->readChannel<lms::imaging::Image>(this,getStringMapping("CAMERA_IMAGE"));
 
     //get the window you want to draw an
-    window = VisualManager::getInstance()->getWindow(this,"Image");
+
+    logger.debug("init") <<"wasd";
+    window = VisualManager::getInstance()->getWindow(this,getStringMapping("WINDOW_NAME"));
+    logger.debug("init") <<"wasd";
     //setup material for texture
-    imageGroundMaterial = Ogre::MaterialManager::getSingleton().create("CameraImageGroundMaterial",
+    imageGroundMaterial = Ogre::MaterialManager::getSingleton().create(groundMatName+getName(),
                           Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
 
+    logger.debug("init") <<"wasd";
     return true;
 }
 
@@ -47,21 +57,28 @@ bool Camera_plain::cycle (){
     window->getCamera()->setPosition(Ogre::Vector3(0,0,-1));
     window->getCamera()->lookAt(Ogre::Vector3::ZERO);
 
-    //check if bounds of the image changed
-    if (lastWidth != image->width() ||lastHeight != image->height()) {
-        lastWidth = image->width();
-        lastHeight = image->height();
-        setupEnvironment(image->width(), image->height());
+    if(image->width() == 0 || image->height() == 0){
+        logger.error("ZERO");
+    }else{
+        //check if bounds of the image changed
+        if (lastWidth != image->width() ||lastHeight != image->height()) {
+            lastWidth = image->width();
+            lastHeight = image->height();
+            setupEnvironment(image->width(), image->height());
+            logger.error("ENV");
+        }
+
+        //draw the image
+        drawImage();
     }
-    //draw the image
-    drawImage();
     return true;
 }
 
 void Camera_plain::setupEnvironment( int w, int h ){
+    static std::string textureName = "ImageImageTextureMap";
     //TODO destroy old stuff if this method is called a second time
     imageTexture = TextureManager::getSingleton().createManual(
-                       "ImageImageTextureMap", // name
+                       textureName+getName(), // name
                        ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
                        TEX_TYPE_2D,      // type
                        w, h,         // width & height
@@ -80,7 +97,7 @@ void Camera_plain::setupEnvironment( int w, int h ){
         rootNode->removeAllChildren();
         rootNode->detachAllObjects();
     }else{
-        rootNode = window->getSceneManager()->getRootSceneNode()->createChildSceneNode("CameraPlainNode");
+        rootNode = window->getSceneManager()->getRootSceneNode()->createChildSceneNode("CameraNode");
     }
     if(rect != nullptr){
         delete rect;
@@ -89,7 +106,7 @@ void Camera_plain::setupEnvironment( int w, int h ){
     rect = new Rectangle2D(true);
     //TODO create rect in world-coordinates (size of the image)
     rect->setCorners(-1.0, 1.0, 1.0, -1.0);
-    rect->setMaterial("CameraImageGroundMaterial");
+    rect->setMaterial(groundMatName+getName());
     rootNode->attachObject(rect);
 }
 
