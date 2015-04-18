@@ -51,4 +51,32 @@
 			</map>
 		</mapping>
 	</module>
+	<module>
+		<name>camera_renderer_sobel_y</name>
+		<libname>camera_renderer</libname>
+		<mapping>
+			<map>
+				<from>CAMERA_IMAGE</from>
+				<to>CAMERA_IMAGE_SOBEL_Y</to>
+			</map>
+			<map>
+				<from>WINDOW_NAME</from>
+				<to>IMAGE_SOBEL_Y</to>
+			</map>
+		</mapping>
+	</module>
+	<module>
+		<name>camera_renderer_sobel_x</name>
+		<libname>camera_renderer</libname>
+		<mapping>
+			<map>
+				<from>CAMERA_IMAGE</from>
+				<to>CAMERA_IMAGE_SOBEL_X</to>
+			</map>
+			<map>
+				<from>WINDOW_NAME</from>
+				<to>IMAGE_SOBEL_X</to>
+			</map>
+		</mapping>
+	</module>
 </modules>
