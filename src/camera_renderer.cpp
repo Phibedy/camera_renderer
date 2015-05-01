@@ -33,16 +33,11 @@ bool Camera_plain::initialize(){
     image = datamanager()->readChannel<lms::imaging::Image>(this,getStringMapping("CAMERA_IMAGE"));
 
     //get the window you want to draw an
-
-    logger.debug("init") <<"wasd";
     window = VisualManager::getInstance()->getWindow(this,getStringMapping("WINDOW_NAME"));
-    logger.debug("init") <<"wasd";
     //setup material for texture
     imageGroundMaterial = Ogre::MaterialManager::getSingleton().create(groundMatName+getName(),
                           Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
-
-    logger.debug("init") <<"wasd";
     return true;
 }
 
@@ -65,7 +60,7 @@ bool Camera_plain::cycle (){
             lastWidth = image->width();
             lastHeight = image->height();
             setupEnvironment(image->width(), image->height());
-            logger.error("ENV");
+            logger.debug("imageBounds changed");
         }
 
         //draw the image
