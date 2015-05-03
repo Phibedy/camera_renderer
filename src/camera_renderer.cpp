@@ -30,12 +30,13 @@ bool Camera_plain::initialize(){
     lastHeight = 0;
 
     //get the image
-    image = datamanager()->readChannel<lms::imaging::Image>(this,getStringMapping("CAMERA_IMAGE"));
+    const lms::type::ModuleConfig *config = getConfig();
+    image = datamanager()->readChannel<lms::imaging::Image>(this,"IMAGE");
 
     //get the window you want to draw an
 
     logger.debug("init") <<"wasd";
-    window = VisualManager::getInstance()->getWindow(this,getStringMapping("WINDOW_NAME"));
+    window = VisualManager::getInstance()->getWindow(this,config->get<std::string>("window", "WINDOW"));
     logger.debug("init") <<"wasd";
     //setup material for texture
     imageGroundMaterial = Ogre::MaterialManager::getSingleton().create(groundMatName+getName(),
