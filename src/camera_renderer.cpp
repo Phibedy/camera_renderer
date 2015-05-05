@@ -52,7 +52,6 @@ bool Camera_plain::cycle (){
     window->getCamera()->setProjectionType(Ogre::ProjectionType::PT_ORTHOGRAPHIC);
     window->getCamera()->setPosition(Ogre::Vector3(0,0,-1));
     window->getCamera()->lookAt(Ogre::Vector3::ZERO);
-
     if(image->width() == 0 || image->height() == 0){
         logger.error("ZERO");
     }else{
@@ -63,7 +62,6 @@ bool Camera_plain::cycle (){
             setupEnvironment(image->width(), image->height());
             logger.debug("imageBounds changed");
         }
-
         //draw the image
         drawImage();
     }
@@ -84,10 +82,9 @@ void Camera_plain::setupEnvironment( int w, int h ){
 
     //TODO Maybe that can be done else
     //TODO destroy it
-    logger.debug("created texture named: ") << textureName+getName();
     Ogre::TextureUnitState *unitState = imageGroundMaterial->getTechnique(0)->getPass(0)->createTextureUnitState();
     unitState->setTexture(imageTexture);
-    unitState->setColourOperationEx(Ogre::LBX_BLEND_TEXTURE_ALPHA, Ogre::LBS_TEXTURE, Ogre::LBS_CURRENT);
+    unitState->setColourOperationEx(Ogre::LBX_BLEND_TEXTURE_ALPHA);//, Ogre::LBS_TEXTURE, Ogre::LBS_CURRENT);
 
     if(rootNode != nullptr){
         //clear the rootnode
@@ -114,7 +111,6 @@ void Camera_plain::setupEnvironment( int w, int h ){
 }
 
 void Camera_plain::drawImage(){
-    logger.info("draw: " + m_groundMatName);
     HardwarePixelBufferSharedPtr pixelBuffer = imageTexture->getBuffer();
     // Lock the pixel buffer and get a pixel box
     pixelBuffer->lock(HardwareBuffer::HBL_NORMAL); // for best performance use HBL_DISCARD!
