@@ -21,18 +21,14 @@
 //TODO remove that
 using namespace Ogre;
 
-//std::string Camera_plain::groundMatName = "CameraImageGroundMaterial";
+std::string Camera_plain::groundMatName = "CameraImageGroundMaterial";
 
 bool Camera_plain::initialize(){
     logger.debug("init") <<"init";
-    static int i = 0;
-    i++;
-    groundMatName = "CameraImageGroundMaterial";
-    groundMatName += i;
     //set values
     lastWidth = 0;
     lastHeight = 0;
-
+    m_groundMatName = groundMatName + getName();
     //get the image
     const lms::type::ModuleConfig *config = getConfig();
     image = datamanager()->readChannel<lms::imaging::Image>(this,"IMAGE");
@@ -40,7 +36,7 @@ bool Camera_plain::initialize(){
     //get the window you want to draw an
     window = VisualManager::getInstance()->getWindow(this,config->get<std::string>("window", "WINDOW"));
     //setup material for texture
-    imageGroundMaterial = Ogre::MaterialManager::getSingleton().create(groundMatName+getName(),
+    imageGroundMaterial = Ogre::MaterialManager::getSingleton().create(m_groundMatName,
                           Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
     return true;
@@ -88,6 +84,7 @@ void Camera_plain::setupEnvironment( int w, int h ){
 
     //TODO Maybe that can be done else
     //TODO destroy it
+    logger.debug("created texture named: ") << textureName+getName();
     Ogre::TextureUnitState *unitState = imageGroundMaterial->getTechnique(0)->getPass(0)->createTextureUnitState();
     unitState->setTexture(imageTexture);
     unitState->setColourOperationEx(Ogre::LBX_BLEND_TEXTURE_ALPHA, Ogre::LBS_TEXTURE, Ogre::LBS_CURRENT);
@@ -112,11 +109,12 @@ void Camera_plain::setupEnvironment( int w, int h ){
     rect = new Rectangle2D(true);
     //TODO create rect in world-coordinates (size of the image)
     rect->setCorners(-1.0, 1.0, 1.0, -1.0);
-    rect->setMaterial(groundMatName+getName());
+    rect->setMaterial(m_groundMatName);
     rootNode->attachObject(rect);
 }
 
 void Camera_plain::drawImage(){
+    logger.info("draw: " + m_groundMatName);
     HardwarePixelBufferSharedPtr pixelBuffer = imageTexture->getBuffer();
     // Lock the pixel buffer and get a pixel box
     pixelBuffer->lock(HardwareBuffer::HBL_NORMAL); // for best performance use HBL_DISCARD!

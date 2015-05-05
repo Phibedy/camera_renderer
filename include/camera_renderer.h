@@ -43,11 +43,11 @@ private:
     int lastWidth;
     int lastHeight;
 
+    std::string m_groundMatName;
     /**
      * name that written before the modulename to get the material
-     *
      */
-    std::string groundMatName;
+    static std::string groundMatName;
 
     void setupEnvironment(int width, int height);
     void drawImage();

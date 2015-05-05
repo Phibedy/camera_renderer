@@ -10,6 +10,6 @@ set (HEADERS
 
 include_directories("include")
 
-add_library ( camera_renderer SHARED ${SOURCES} ${HEADERS})
+add_library ( image_renderer SHARED ${SOURCES} ${HEADERS})
 #link ogre lms and the ogre_window_manager
-target_link_libraries(camera_renderer PRIVATE lms ogre_binding ogre_window_manager imaging)
+target_link_libraries(image_renderer PRIVATE lms ogre_binding ogre_window_manager imaging)
