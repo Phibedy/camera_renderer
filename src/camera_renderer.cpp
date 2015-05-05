@@ -38,11 +38,12 @@ bool Camera_plain::initialize(){
     //setup material for texture
     imageGroundMaterial = Ogre::MaterialManager::getSingleton().create(m_groundMatName,
                           Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-    imageGroundMaterial->getTechnique(0)->getPass(0)->setDepthCheckEnabled(false);
-    imageGroundMaterial->getTechnique(0)->getPass(0)->setDepthWriteEnabled(false);
     //imageGroundMaterial->getTechnique(0)->getPass(0)->setLightingEnabled(false);
     //if setLightingEnabled(false) is used, transparent pixels are white?
     //imageGroundMaterial->getTechnique(0)->getPass(0)->setAlphaToCoverageEnabled(true);
+
+    imageGroundMaterial->getTechnique(0)->getPass(0)->setSceneBlending(SceneBlendType::SBT_TRANSPARENT_ALPHA);
+    imageGroundMaterial->getTechnique(0)->getPass(0)->setDepthWriteEnabled(false);
 
     return true;
 }
@@ -118,7 +119,15 @@ void Camera_plain::setupEnvironment( int w, int h ){
     rect->setBoundingBox(aabInf);
 
     // Render the background before everything else
-    rect->setRenderQueueGroup(RENDER_QUEUE_BACKGROUND);
+    //rect->setRenderQueueGroup(RENDER_QUEUE_BACKGROUND);
+
+    if(getPriority() < 0 || getPriority() > 255) {
+        logger.error("setupEnvironment") << "Don't summon the evil! "
+                                         << "Priority is out of range 0-255: "
+                                         << getPriority();
+    }
+
+    rect->setRenderQueueGroup((std::uint8_t)getPriority());
 
     rootNode->attachObject(rect);
 }
