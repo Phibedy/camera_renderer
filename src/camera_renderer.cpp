@@ -38,6 +38,11 @@ bool Camera_plain::initialize(){
     //setup material for texture
     imageGroundMaterial = Ogre::MaterialManager::getSingleton().create(m_groundMatName,
                           Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+    imageGroundMaterial->getTechnique(0)->getPass(0)->setDepthCheckEnabled(false);
+    imageGroundMaterial->getTechnique(0)->getPass(0)->setDepthWriteEnabled(false);
+    //imageGroundMaterial->getTechnique(0)->getPass(0)->setLightingEnabled(false);
+    //if setLightingEnabled(false) is used, transparent pixels are white?
+    //imageGroundMaterial->getTechnique(0)->getPass(0)->setAlphaToCoverageEnabled(true);
 
     return true;
 }
@@ -107,6 +112,14 @@ void Camera_plain::setupEnvironment( int w, int h ){
     //TODO create rect in world-coordinates (size of the image)
     rect->setCorners(-1.0, 1.0, 1.0, -1.0);
     rect->setMaterial(m_groundMatName);
+    // Use infinite AAB to always stay visible
+    AxisAlignedBox aabInf;
+    aabInf.setInfinite();
+    rect->setBoundingBox(aabInf);
+
+    // Render the background before everything else
+    rect->setRenderQueueGroup(RENDER_QUEUE_BACKGROUND);
+
     rootNode->attachObject(rect);
 }
 
