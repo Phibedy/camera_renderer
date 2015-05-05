@@ -47,7 +47,7 @@ private:
      * name that written before the modulename to get the material
      *
      */
-    static std::string groundMatName;
+    std::string groundMatName;
 
     void setupEnvironment(int width, int height);
     void drawImage();

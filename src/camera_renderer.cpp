@@ -21,10 +21,14 @@
 //TODO remove that
 using namespace Ogre;
 
-std::string Camera_plain::groundMatName = "CameraImageGroundMaterial";
+//std::string Camera_plain::groundMatName = "CameraImageGroundMaterial";
 
 bool Camera_plain::initialize(){
     logger.debug("init") <<"init";
+    static int i = 0;
+    i++;
+    groundMatName = "CameraImageGroundMaterial";
+    groundMatName += i;
     //set values
     lastWidth = 0;
     lastHeight = 0;
@@ -90,10 +94,16 @@ void Camera_plain::setupEnvironment( int w, int h ){
 
     if(rootNode != nullptr){
         //clear the rootnode
+        //that should never be called!
+        logger.error("Called weird part of init");
         rootNode->removeAllChildren();
         rootNode->detachAllObjects();
     }else{
-        rootNode = window->getSceneManager()->getRootSceneNode()->createChildSceneNode("CameraNode");
+        if(window->getSceneManager()->hasSceneNode("CameraNode")){
+            rootNode = window->getSceneManager()->getSceneNode("CameraNode");
+        }else{
+            rootNode = window->getSceneManager()->getRootSceneNode()->createChildSceneNode("CameraNode");
+        }
     }
     if(rect != nullptr){
         delete rect;
@@ -114,4 +124,5 @@ void Camera_plain::drawImage(){
     uint8* pDest = static_cast<uint8*>(pixelBox.data);
     lms::imaging::convertRaw(image->format(),image->data(),image->size(),lms::imaging::Format::BGRA, pDest);
     pixelBuffer->unlock();
+
 }
