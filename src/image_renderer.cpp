@@ -1,4 +1,4 @@
-#include <image_renderer.h>
+#include <camera_renderer.h>
 #include <lms/imaging/converter.h>
 #include <ogre/visualmanager.h>
 #include <OGRE/OgreLogManager.h>
@@ -21,9 +21,9 @@
 //TODO remove that
 using namespace Ogre;
 
-std::string ImageRenderer::groundMatName = "CameraImageGroundMaterial";
+std::string Camera_plain::groundMatName = "CameraImageGroundMaterial";
 
-bool ImageRenderer::initialize(){
+bool Camera_plain::initialize(){
     logger.debug("init") <<"init";
     //set values
     lastWidth = 0;
@@ -38,21 +38,22 @@ bool ImageRenderer::initialize(){
     //setup material for texture
     imageGroundMaterial = Ogre::MaterialManager::getSingleton().create(m_groundMatName,
                           Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-    //imageGroundMaterial->getTechnique(0)->getPass(0)->setDepthCheckEnabled(false);
-    //imageGroundMaterial->getTechnique(0)->getPass(0)->setDepthWriteEnabled(false);
     //imageGroundMaterial->getTechnique(0)->getPass(0)->setLightingEnabled(false);
     //if setLightingEnabled(false) is used, transparent pixels are white?
     //imageGroundMaterial->getTechnique(0)->getPass(0)->setAlphaToCoverageEnabled(true);
 
+    imageGroundMaterial->getTechnique(0)->getPass(0)->setSceneBlending(SceneBlendType::SBT_TRANSPARENT_ALPHA);
+    imageGroundMaterial->getTechnique(0)->getPass(0)->setDepthWriteEnabled(false);
+
     return true;
 }
 
-bool ImageRenderer::deinitialize(){
+bool Camera_plain::deinitialize(){
     logger.error("Deinit:")<< "Not implemented yet";
     return false;
 }
 
-bool ImageRenderer::cycle (){
+bool Camera_plain::cycle (){
     //set camera values
     window->getCamera()->setProjectionType(Ogre::ProjectionType::PT_ORTHOGRAPHIC);
     window->getCamera()->setPosition(Ogre::Vector3(0,0,-1));
@@ -73,7 +74,7 @@ bool ImageRenderer::cycle (){
     return true;
 }
 
-void ImageRenderer::setupEnvironment( int w, int h ){
+void Camera_plain::setupEnvironment( int w, int h ){
     static std::string textureName = "ImageImageTextureMap";
     //TODO destroy old stuff if this method is called a second time
     imageTexture = TextureManager::getSingleton().createManual(
@@ -85,11 +86,11 @@ void ImageRenderer::setupEnvironment( int w, int h ){
                        PF_BYTE_BGRA,     // pixel format
                        TU_DEFAULT);
 
-    //TODO Maybe that can be done in a diffrent way
+    //TODO Maybe that can be done else
     //TODO destroy it
     Ogre::TextureUnitState *unitState = imageGroundMaterial->getTechnique(0)->getPass(0)->createTextureUnitState();
     unitState->setTexture(imageTexture);
-    unitState->setColourOperationEx(Ogre::LBX_BLEND_TEXTURE_ALPHA, Ogre::LBS_TEXTURE, Ogre::LBS_CURRENT);
+    unitState->setColourOperationEx(Ogre::LBX_BLEND_TEXTURE_ALPHA);//, Ogre::LBS_TEXTURE, Ogre::LBS_CURRENT);
 
     if(rootNode != nullptr){
         //clear the rootnode
@@ -113,17 +114,25 @@ void ImageRenderer::setupEnvironment( int w, int h ){
     rect->setCorners(-1.0, 1.0, 1.0, -1.0);
     rect->setMaterial(m_groundMatName);
     // Use infinite AAB to always stay visible
-    /*AxisAlignedBox aabInf;
+    AxisAlignedBox aabInf;
     aabInf.setInfinite();
     rect->setBoundingBox(aabInf);
-    */
+
     // Render the background before everything else
     //rect->setRenderQueueGroup(RENDER_QUEUE_BACKGROUND);
+
+    if(getPriority() < 0 || getPriority() > 255) {
+        logger.error("setupEnvironment") << "Don't summon the evil! "
+                                         << "Priority is out of range 0-255: "
+                                         << getPriority();
+    }
+
+    rect->setRenderQueueGroup((std::uint8_t)getPriority());
 
     rootNode->attachObject(rect);
 }
 
-void ImageRenderer::drawImage(){
+void Camera_plain::drawImage(){
     HardwarePixelBufferSharedPtr pixelBuffer = imageTexture->getBuffer();
     // Lock the pixel buffer and get a pixel box
     pixelBuffer->lock(HardwareBuffer::HBL_NORMAL); // for best performance use HBL_DISCARD!
