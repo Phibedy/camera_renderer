@@ -12,7 +12,7 @@
 #include <OGRE/OgreTexture.h>
 #include <OGRE/OgreRectangle2D.h>
 
-class Camera_plain : public lms::Module {
+class ImageRenderer : public lms::Module {
 public:
 	bool initialize();
 	bool deinitialize();

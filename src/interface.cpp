@@ -1,7 +1,7 @@
-#include <camera_renderer.h>
+#include <image_renderer.h>
 
 extern "C" {
 void* getInstance () {
-	return new Camera_plain();
+    return new ImageRenderer();
 }
 }

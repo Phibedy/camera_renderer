@@ -1,10 +1,10 @@
 set ( SOURCES 
-	"src/camera_renderer.cpp"
+	"src/image_renderer.cpp"
 	"src/interface.cpp"
 )
 
 set (HEADERS 
-	"include/camera_renderer.h"
+	"include/image_renderer.h"
 	${HEADERS_SHARED}
 )
 
