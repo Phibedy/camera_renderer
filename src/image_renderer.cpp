@@ -1,4 +1,4 @@
-#include <camera_renderer.h>
+#include <image_renderer.h>
 #include <lms/imaging/converter.h>
 #include <ogre/visualmanager.h>
 #include <OGRE/OgreLogManager.h>
@@ -21,9 +21,9 @@
 //TODO remove that
 using namespace Ogre;
 
-std::string Camera_plain::groundMatName = "CameraImageGroundMaterial";
+std::string ImageRenderer::groundMatName = "CameraImageGroundMaterial";
 
-bool Camera_plain::initialize(){
+bool ImageRenderer::initialize(){
     logger.debug("init") <<"init";
     //set values
     lastWidth = 0;
@@ -34,13 +34,10 @@ bool Camera_plain::initialize(){
     image = datamanager()->readChannel<lms::imaging::Image>(this,"IMAGE");
 
     //get the window you want to draw an
-    window = VisualManager::getInstance()->getWindow(this,config->get<std::string>("window", "WINDOW"));
+    window = VisualManager::getInstance()->getWindow(this,config->get<std::string>("WINDOW", "WINDOW"));
     //setup material for texture
     imageGroundMaterial = Ogre::MaterialManager::getSingleton().create(m_groundMatName,
                           Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-    //imageGroundMaterial->getTechnique(0)->getPass(0)->setLightingEnabled(false);
-    //if setLightingEnabled(false) is used, transparent pixels are white?
-    //imageGroundMaterial->getTechnique(0)->getPass(0)->setAlphaToCoverageEnabled(true);
 
     imageGroundMaterial->getTechnique(0)->getPass(0)->setSceneBlending(SceneBlendType::SBT_TRANSPARENT_ALPHA);
     imageGroundMaterial->getTechnique(0)->getPass(0)->setDepthWriteEnabled(false);
@@ -48,12 +45,12 @@ bool Camera_plain::initialize(){
     return true;
 }
 
-bool Camera_plain::deinitialize(){
+bool ImageRenderer::deinitialize(){
     logger.error("Deinit:")<< "Not implemented yet";
     return false;
 }
 
-bool Camera_plain::cycle (){
+bool ImageRenderer::cycle (){
     //set camera values
     window->getCamera()->setProjectionType(Ogre::ProjectionType::PT_ORTHOGRAPHIC);
     window->getCamera()->setPosition(Ogre::Vector3(0,0,-1));
@@ -74,7 +71,7 @@ bool Camera_plain::cycle (){
     return true;
 }
 
-void Camera_plain::setupEnvironment( int w, int h ){
+void ImageRenderer::setupEnvironment( int w, int h ){
     static std::string textureName = "ImageImageTextureMap";
     //TODO destroy old stuff if this method is called a second time
     imageTexture = TextureManager::getSingleton().createManual(
@@ -118,9 +115,6 @@ void Camera_plain::setupEnvironment( int w, int h ){
     aabInf.setInfinite();
     rect->setBoundingBox(aabInf);
 
-    // Render the background before everything else
-    //rect->setRenderQueueGroup(RENDER_QUEUE_BACKGROUND);
-
     if(getPriority() < 0 || getPriority() > 255) {
         logger.error("setupEnvironment") << "Don't summon the evil! "
                                          << "Priority is out of range 0-255: "
@@ -132,7 +126,7 @@ void Camera_plain::setupEnvironment( int w, int h ){
     rootNode->attachObject(rect);
 }
 
-void Camera_plain::drawImage(){
+void ImageRenderer::drawImage(){
     HardwarePixelBufferSharedPtr pixelBuffer = imageTexture->getBuffer();
     // Lock the pixel buffer and get a pixel box
     pixelBuffer->lock(HardwareBuffer::HBL_NORMAL); // for best performance use HBL_DISCARD!
