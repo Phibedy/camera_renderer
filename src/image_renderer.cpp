@@ -114,14 +114,16 @@ void ImageRenderer::setupEnvironment( int w, int h ){
     AxisAlignedBox aabInf;
     aabInf.setInfinite();
     rect->setBoundingBox(aabInf);
-
     if(getPriority() < 0 || getPriority() > 255) {
         logger.error("setupEnvironment") << "Don't summon the evil! "
                                          << "Priority is out of range 0-255: "
                                          << getPriority();
+        //TODO
+        return;
     }
+    std::uint8_t priority =getPriority(); //255 - getPriority();
 
-    rect->setRenderQueueGroup((std::uint8_t)getPriority());
+    rect->setRenderQueueGroup(priority);
 
     rootNode->attachObject(rect);
 }
