@@ -30,7 +30,7 @@ bool ImageRenderer::initialize(){
     lastHeight = 0;
     m_groundMatName = groundMatName + getName();
     //get the image
-    const lms::type::ModuleConfig *config = getConfig();
+    const lms::ModuleConfig *config = getConfig();
     image = datamanager()->readChannel<lms::imaging::Image>(this,"IMAGE");
 
     //get the window you want to draw an
