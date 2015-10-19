@@ -51,6 +51,7 @@ private:
 
     void setupEnvironment(int width, int height);
     void drawImage();
+    int getPriority();
 };
 
 #endif /* CAMERA_RENDERER_H */

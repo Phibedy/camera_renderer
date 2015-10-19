@@ -30,11 +30,10 @@ bool ImageRenderer::initialize(){
     lastHeight = 0;
     m_groundMatName = groundMatName + getName();
     //get the image
-    const lms::ModuleConfig *config = getConfig();
     image = datamanager()->readChannel<lms::imaging::Image>(this,"IMAGE");
 
     //get the window you want to draw an
-    window = VisualManager::getInstance()->getWindow(this,config->get<std::string>("WINDOW", "WINDOW"));
+    window = VisualManager::getInstance()->getWindow(this,getChannelMapping("WINDOW"));
     //setup material for texture
     imageGroundMaterial = Ogre::MaterialManager::getSingleton().create(m_groundMatName,
                           Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
@@ -126,6 +125,10 @@ void ImageRenderer::setupEnvironment( int w, int h ){
     rect->setRenderQueueGroup(priority);
 
     rootNode->attachObject(rect);
+}
+
+int ImageRenderer::getPriority(){
+    return getChannelPriority("WINDOW");
 }
 
 void ImageRenderer::drawImage(){
