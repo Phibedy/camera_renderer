@@ -26,7 +26,7 @@ protected:
     /**
      * @brief image the image to draw
      */
-    const lms::imaging::Image* image;
+    lms::ReadDataChannel<lms::imaging::Image> image;
 
     Ogre::MaterialPtr imageGroundMaterial;
     /**
