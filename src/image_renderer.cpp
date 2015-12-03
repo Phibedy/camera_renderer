@@ -23,14 +23,13 @@ using namespace Ogre;
 
 std::string ImageRenderer::groundMatName = "CameraImageGroundMaterial";
 
-bool ImageRenderer::initialize(){
-    logger.debug("init") <<"init";
+bool ImageRenderer::initialize() {
     //set values
     lastWidth = 0;
     lastHeight = 0;
     m_groundMatName = groundMatName + getName();
     //get the image
-    image = datamanager()->readChannel<lms::imaging::Image>(this,"IMAGE");
+    image = readChannel<lms::imaging::Image>("IMAGE");
 
     //get the window you want to draw an
     window = VisualManager::getInstance()->getWindow(this,getChannelMapping("WINDOW"));

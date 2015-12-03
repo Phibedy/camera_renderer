@@ -1,7 +1,3 @@
 #include <image_renderer.h>
 
-extern "C" {
-void* getInstance () {
-    return new ImageRenderer();
-}
-}
+LMS_MODULE_INTERFACE(ImageRenderer)
