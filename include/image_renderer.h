@@ -2,7 +2,6 @@
 #define CAMERA_RENDERER_H
 
 #include <ogre/visualmanager.h>
-#include <lms/datamanager.h>
 #include <lms/module.h>
 #include <ogre/window.h>
 #include <lms/imaging/image.h>
