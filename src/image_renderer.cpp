@@ -44,8 +44,9 @@ bool ImageRenderer::initialize() {
 }
 
 bool ImageRenderer::deinitialize(){
-    logger.error("Deinit:")<< "Not implemented yet";
-    return false;
+    //TODO
+    logger.warn("Deinit:")<< "Not implemented yet";
+    return true;
 }
 
 bool ImageRenderer::cycle (){
@@ -54,7 +55,7 @@ bool ImageRenderer::cycle (){
     window->getCamera()->setPosition(Ogre::Vector3(0,0,-1));
     window->getCamera()->lookAt(Ogre::Vector3::ZERO);
     if(image->width() == 0 || image->height() == 0){
-        logger.error("ZERO");
+        logger.warn("cycle")<<"image size is 0";
     }else{
         //check if bounds of the image changed
         if (lastWidth != image->width() ||lastHeight != image->height()) {
