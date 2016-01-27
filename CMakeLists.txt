@@ -5,7 +5,6 @@ set ( SOURCES
 
 set (HEADERS
 	"include/image_renderer.h"
-	${HEADERS_SHARED}
 )
 
 include_directories("include")
